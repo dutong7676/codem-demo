@@ -72,6 +72,9 @@ function Logo({ inverse = false }: { inverse?: boolean }) {
 
 export default function Home() {
   const [commandOpen, setCommandOpen] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">(
+    () => (typeof window !== "undefined" && window.localStorage.getItem("codem-theme") === "dark" ? "dark" : "light"),
+  );
   const [demoRunning, setDemoRunning] = useState(false);
   const [demoPaused, setDemoPaused] = useState(false);
   const [demoComplete, setDemoComplete] = useState(false);
@@ -97,6 +100,21 @@ export default function Home() {
     window.addEventListener("keydown", handleShortcut);
     return () => window.removeEventListener("keydown", handleShortcut);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("theme-dark", theme === "dark");
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const root = document.documentElement;
+    root.classList.add("theme-transition");
+    setTheme((current) => {
+      const next = current === "dark" ? "light" : "dark";
+      window.localStorage.setItem("codem-theme", next);
+      return next;
+    });
+    window.setTimeout(() => root.classList.remove("theme-transition"), 220);
+  };
 
   useEffect(() => {
     if (!demoRunning) return;
@@ -176,7 +194,7 @@ export default function Home() {
   const story = stories[storyIndex];
 
   return (
-    <main className={`codem-site theme-light`} id="top">
+    <main className={`codem-site ${theme === "dark" ? "theme-dark" : "theme-light"}`} id="top">
       <header className="site-header">
         <div className="logo-distortion"><Logo /></div>
         <div className="broadcast-id"><i />CODEM LIVE LAB <span>2026.07.15 / 20:00</span></div>
@@ -187,7 +205,10 @@ export default function Home() {
         </nav>
         <div className="header-actions">
           <span className="live-status"><i /><b>系统离线</b></span>{/* BUG-09: 绿灯配离线文案 */}
-          <button className="command-button" type="button" onClick={() => setCommandOpen(true)}>快速启动 <kbd>⌘ K</kbd></button>
+          <button className="command-button theme-toggle" type="button" aria-label={theme === "dark" ? "切换到亮色模式" : "切换到暗色模式"} aria-pressed={theme === "dark"} onClick={toggleTheme} title={theme === "dark" ? "切换到亮色模式" : "切换到暗色模式"}>
+              <span className="theme-toggle-icon" aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span>
+            </button>
+            <button className="command-button" type="button" onClick={() => setCommandOpen(true)}>快速启动 <kbd>⌘ K</kbd></button>
         </div>
       </header>
 
