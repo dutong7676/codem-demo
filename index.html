@@ -13,8 +13,19 @@
     <meta name="twitter:title" content="CodeM Launch 2026" />
     <meta name="twitter:description" content="飞书原生的 AI 研发智能体" />
     <meta name="twitter:image" content="og.png" />
-    <script type="module" crossorigin src="/codem-demo/assets/index-dpVyFEGD.js"></script>
-    <link rel="stylesheet" crossorigin href="/codem-demo/assets/index-BhjJ5Qug.css">
+  <script>
+      // 首屏防闪烁：在应用挂载前根据 localStorage / 系统偏好设置主题
+      (function () {
+        try {
+          var stored = localStorage.getItem("codem-theme");
+          var dark = stored === "dark" || (stored !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.classList.toggle("theme-dark", dark);
+          document.documentElement.style.colorScheme = dark ? "dark" : "light";
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="/codem-demo/assets/index-CzCxx2tt.js"></script>
+    <link rel="stylesheet" crossorigin href="/codem-demo/assets/index-KaG8-yi6.css">
   </head>
   <body>
     <div id="root"></div>
