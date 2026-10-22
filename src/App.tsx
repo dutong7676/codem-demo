@@ -72,9 +72,12 @@ function Logo({ inverse = false }: { inverse?: boolean }) {
 
 export default function Home() {
   const [commandOpen, setCommandOpen] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">(
-    () => (typeof window !== "undefined" && window.localStorage.getItem("codem-theme") === "dark" ? "dark" : "light"),
-  );
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof window === "undefined") return "light";
+  const stored = window.localStorage.getItem("codem-theme");
+    if (stored === "dark" || stored === "light") return stored;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
   const [demoRunning, setDemoRunning] = useState(false);
   const [demoPaused, setDemoPaused] = useState(false);
   const [demoComplete, setDemoComplete] = useState(false);
@@ -102,8 +105,21 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("theme-dark", theme === "dark");
+    const root = document.documentElement;
+  root.classList.toggle("theme-dark", theme === "dark");
+    root.style.colorScheme = theme === "dark" ? "dark" : "light";
   }, [theme]);
+
+  // 无手动选择时跟随系统主题切换
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-color-scheme: dark)");
+    const followSystem = (event: MediaQueryListEvent) => {
+      if (window.localStorage.getItem("codem-theme")) return;
+      setTheme(event.matches ? "dark" : "light");
+    };
+    query.addEventListener("change", followSystem);
+    return () => query.removeEventListener("change", followSystem);
+  }, []);
 
   const toggleTheme = () => {
     const root = document.documentElement;
