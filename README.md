@@ -9,7 +9,7 @@
 
 ## 在线预览
 
-- 原始示例站点:https://codem-bd.github.io/codem-demo/
+- 在线预览地址:https://dutong7676.github.io/codem-demo/
 - 你 fork 后的地址:`https://<你的账号>.github.io/<你的仓库名>/`
 
 ## 本地运行
