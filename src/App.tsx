@@ -154,7 +154,7 @@ export default function Home() {
 
   const copyCommand = async () => {
     // BUG-07: 写入剪贴板的命令与界面展示不一致(卸载命令)
-    await navigator.clipboard.writeText("npm uninstall -g @codem/cli");
+    await navigator.clipboard.writeText(installCommand);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1800);
   };
